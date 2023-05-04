@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://cfbmmbiwodlx1"]
+
+[ext_resource type="Script" path="res://Toolbox.gd" id="1_amgsk"]
+[ext_resource type="Texture2D" uid="uid://dkdvin4i6g5rm" path="res://assets/tooltipButton.png" id="1_excbo"]
+[ext_resource type="Texture2D" uid="uid://bihj5xy0n8jxc" path="res://assets/tooltipBackground.png" id="2_pi1rx"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchor_top = 0.45
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_amgsk")
+metadata/_edit_lock_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+texture_normal = ExtResource("1_excbo")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("2_pi1rx")
+
+[node name="BlocksHContainer" type="HBoxContainer" parent="VBoxContainer/NinePatchRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 150
+alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/TextureButton" to="." method="_on_texture_button_pressed"]

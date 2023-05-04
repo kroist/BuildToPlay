@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://ca5brw05vkk77"]
+
+[ext_resource type="Script" path="res://blocks/CrateBlock.gd" id="1_fl0us"]
+[ext_resource type="Texture2D" uid="uid://dh51s0d0yn14e" path="res://assets/blocks/crate.png" id="1_qjgpq"]
+
+[node name="CrateBlock" type="Node2D"]
+script = ExtResource("1_fl0us")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(16, 16, -16, 16, -16, -16, 16, -16)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_qjgpq")

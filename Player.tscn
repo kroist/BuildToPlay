@@ -1,0 +1,57 @@
+[gd_scene load_steps=7 format=3 uid="uid://c08py8cloi81"]
+
+[ext_resource type="Texture2D" uid="uid://dd7e082lsblh6" path="res://assets/kenney_platformer-characters/PNG/Player/Poses/player_stand.png" id="1_cogpa"]
+[ext_resource type="Script" path="res://Player.gd" id="1_pq46x"]
+[ext_resource type="Texture2D" uid="uid://dw1e8cwtiqpj8" path="res://assets/kenney_platformer-characters/PNG/Player/Poses/player_walk1.png" id="3_h6cd3"]
+[ext_resource type="Texture2D" uid="uid://cdmqybf03vgtg" path="res://assets/kenney_platformer-characters/PNG/Player/Poses/player_jump.png" id="3_q6gg0"]
+[ext_resource type="Texture2D" uid="uid://ctrvowmnclowj" path="res://assets/kenney_platformer-characters/PNG/Player/Poses/player_walk2.png" id="4_1h8ga"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_en8yj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_q6gg0")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_cogpa")
+}],
+"loop": true,
+"name": &"stand",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_h6cd3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_1h8ga")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_pq46x")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(0, -3.8147e-06)
+scale = Vector2(0.45, 0.45)
+texture = ExtResource("1_cogpa")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(0, -3.8147e-06)
+scale = Vector2(0.45, 0.45)
+polygon = PackedVector2Array(29, -42.5, 29, -13, 27.7, -13, 24.3, 5.5, 32, 13.2, 32, 16.6, 34, 27.8, 34, 34.3, 30.4, 45, 28.7, 45, 26, 47, 26, 48.4, 30.3, 54.9, -26, 55, -26, 49.7, -24.5, 45.3, -34.3, 30.1, -33.2, 28, -30.8, 13, -28.8, 13, -25, 9.2, -25, 4, -26, -24, -23.9, -24, -14.9, -35, -11.3, -35, 18, -43.5, 18, -45.7)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.431, 0.45)
+sprite_frames = SubResource("SpriteFrames_en8yj")
+animation = &"stand"

@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbr61pdmbcnxa"]
+
+[ext_resource type="Texture2D" uid="uid://dad5vr6rihtmg" path="res://assets/blocks/pipes.png" id="1_dxhl2"]
+[ext_resource type="Script" path="res://blocks/PipeBlock.gd" id="1_rjcjf"]
+
+[node name="PipeBlock" type="Node2D"]
+script = ExtResource("1_rjcjf")
+metadata/_edit_lock_ = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(48, -48, 48, -37.9, 48, 35.8, 48, 40, 35, 40, -36, 40, -44, 40, -44, 34, -44, 0, -44, -16, -8, -16, -8, -37, -8, -48, -5, -48, 36.5, -48)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(2, -4)
+texture = ExtResource("1_dxhl2")
+metadata/_edit_lock_ = true

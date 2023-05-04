@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://38hvehf0qf8t"]
+
+[ext_resource type="Texture2D" uid="uid://b2b63by01ocl4" path="res://assets/blocks/spikes3.png" id="1_2ht5s"]
+[ext_resource type="Script" path="res://blocks/Spikes3Block.gd" id="1_c3hhu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qwvg0"]
+size = Vector2(96, 18)
+
+[node name="Spikes3Block" type="Node2D"]
+script = ExtResource("1_c3hhu")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(-34, -2.1, -31.9, -0.9, -28.8, -4, -19, -4, -19, -1.8, -15.7, 1.5, -12.1, -4, -3.3, -4, 0.299999, -1.1, 3.2, -4, 13, -4, 13, -1.8, 16.3, 1.5, 19.9, -4, 28.7, -4, 32.3, -1.1, 35.2, -4, 45, -4, 45, -1.7, 48, 1.9, 48, 16, -48, 16, -48, 2.9, -45, -1.6, -45, -4, -34, -4)
+
+[node name="Area2D" type="Area2D" parent="StaticBody2D"]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D/Area2D"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_qwvg0")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_2ht5s")
+
+[connection signal="body_entered" from="StaticBody2D/Area2D" to="." method="_on_area_2d_body_entered"]
