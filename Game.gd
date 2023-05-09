@@ -6,10 +6,11 @@ signal editing_ended
 signal clear_level
 
 var block_scenes: Array[PackedScene] = [
-	preload("res://blocks/Crate3Block.tscn"),
-	preload("res://blocks/CrateBlock.tscn"),
+	#preload("res://blocks/Crate3Block.tscn"),
+	#preload("res://blocks/CrateBlock.tscn"),
 	preload("res://blocks/PipeBlock.tscn"),
-	preload("res://blocks/Spikes3Block.tscn")
+	preload("res://blocks/Spikes3Block.tscn"),
+	preload("res://blocks/MovingCrate2Block.tscn")
 ]
 
 var player_spawn_pos: Vector2
@@ -23,6 +24,8 @@ func _ready():
 	$Player.visible = false
 	$PlacementGrid.visible = false
 	$zindenode/HUDLayer/Toolbox.visible = false
+	$MobileControls.visible = false
+	$MobileControls.set_process(false)
 	player_spawn_pos = $Player.position
 
 
@@ -62,10 +65,14 @@ func start_play_phase():
 	$Player.position = player_spawn_pos
 	$Player.visible = true
 	$Player.set_process(true)
+	$MobileControls.visible = true
+	$MobileControls.set_process(true)
 
 func stop_play_phase():
 	$Player.visible = false
 	$Player.set_process(false)
+	$MobileControls.visible = false
+	$MobileControls.set_process(false)
 	$zindenode/HUDLayer/EditLevelButton.visible = true
 
 func _on_player_death():

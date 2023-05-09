@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://b5scyfn28ti6r"]
+
+[ext_resource type="Texture2D" uid="uid://dc5iafwijflsk" path="res://assets/blocks/slider.png" id="1_i84td"]
+[ext_resource type="Script" path="res://blocks/MovingCrate2Block.gd" id="1_kem1c"]
+[ext_resource type="Texture2D" uid="uid://cugudnfcsdtnh" path="res://assets/blocks/crate2.png" id="2_066jr"]
+[ext_resource type="Texture2D" uid="uid://p4651cy6u8gs" path="res://assets/blocks/slider_crate2.png" id="4_iadpl"]
+
+[node name="MovingCrate2Block" type="Node2D"]
+script = ExtResource("1_kem1c")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CharacterBody2D"]
+polygon = PackedVector2Array(32, 16, -32, 16, -32, -16, 32, -16)
+
+[node name="Slider" type="Sprite2D" parent="."]
+texture = ExtResource("1_i84td")
+
+[node name="Crate" type="Sprite2D" parent="."]
+texture = ExtResource("2_066jr")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 4.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("4_iadpl")

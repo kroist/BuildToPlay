@@ -2,21 +2,35 @@ extends Node2D
 
 var editing_started = false
 
+@export var BACKGROUND_LAYER = 0
 @export var BLOCK_LAYER = 1
 @export var INTERSECTION_LAYER = 2
 var chosen_pattern = 6
 var pattern_rotation = 0
 var floating_block: Node2D
 var floating_block_scenes: Array[PackedScene]
+var chosen_floating_block_scene: PackedScene
+var floating_block_pos: Vector2
 
 var placed_scenes: Array[Node2D]
 
 signal player_death
 signal block_placed
 
+var min_bound = Vector2i(100000, 100000)
+var max_bound = Vector2i(-100000, -100000)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	for node in $TileMap.get_used_cells(BACKGROUND_LAYER):
+		if min_bound > node:
+			min_bound = node
+		if max_bound < node:
+			max_bound = node
+	$CanvasLayer/RotateButtonControl.visible = false
+	$CanvasLayer/RotateButtonControl.set_process(false)
+	$CanvasLayer/PlaceButtonControl.visible = false
+	$CanvasLayer/PlaceButtonControl.set_process(false)
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -24,16 +38,66 @@ func _unhandled_input(event):
 			var pos = get_local_mouse_position()
 			var tile = $TileMap.local_to_map(pos)
 			var inter_cells = intersecting_cells(tile)
-			if inter_cells.is_empty():
-				_on_game_place_block(tile)
+			#if inter_cells.is_empty():
+			#	_on_game_place_block(tile)
+
+var is_dragging = false
+var drag_index = -1
+var drag_start_pos: Vector2
+var drag_cur_pos: Vector2
+
+func _input(event):
+	if event is InputEventScreenTouch and event.pressed:
+		_begin_drag(event)
+	if event is InputEventScreenTouch and !event.pressed:
+		_end_drag(event)
+	if event is InputEventScreenDrag:
+		_process_drag(event)
+
+func _begin_drag(event):
+	if is_dragging or not editing_started:
+		return
+	is_dragging = true
+	drag_index = event.index
+	drag_start_pos = event.position
+	drag_cur_pos = event.position
+	
+func _end_drag(event):
+	if event.index != drag_index or not is_dragging or not editing_started:
+		return
+	is_dragging = false
+	drag_index = -1
+	drag_cur_pos = event.position
+	var draw_pos = (drag_cur_pos-drag_start_pos)+floating_block_pos
+	floating_block_pos = draw_pos.clamp(
+		$TileMap.map_to_local(min_bound-min_floating_pos()), 
+		$TileMap.map_to_local(max_bound-max_floating_pos())
+	)
+
+func _process_drag(event):
+	if event.index != drag_index or !is_dragging or not editing_started:
+		return
+	drag_cur_pos = event.position
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	
 	if editing_started:
-		var pos = get_local_mouse_position()
-		var tile = $TileMap.local_to_map(pos)
+		
+		var draw_pos = floating_block_pos
+		if is_dragging:
+			draw_pos = (drag_cur_pos-drag_start_pos)+floating_block_pos
+		draw_pos = draw_pos.clamp(
+			$TileMap.map_to_local(min_bound-min_floating_pos()), 
+			$TileMap.map_to_local(max_bound-max_floating_pos())
+		)
+		#var pos = get_local_mouse_position()
+		var tile = $TileMap.local_to_map(draw_pos)
 		var inter_cells = intersecting_cells(tile)
+		if inter_cells.is_empty():
+			$CanvasLayer/PlaceButtonControl.modulate = Color("ffffff")
+		else:
+			$CanvasLayer/PlaceButtonControl.modulate = Color("646464")
 		draw_floating(tile)
 		draw_intersection(inter_cells)
 
@@ -49,7 +113,7 @@ func intersecting_cells(place_tile: Vector2i) -> Array[Vector2i]:
 func draw_floating(tile: Vector2i):
 	floating_block.position = $TileMap.map_to_local(tile)
 	pass
-	
+
 
 func draw_intersection(tiles: Array[Vector2i]):
 	$TileMap.clear_layer(INTERSECTION_LAYER)
@@ -60,7 +124,7 @@ func _on_game_place_block(place_tile: Vector2i):
 	for tile in get_floating_positions():
 		var tile_pos = place_tile + tile
 		$TileMap.set_cell(BLOCK_LAYER, tile_pos, 1, Vector2i(15, 5), 5)
-	var placed_block = floating_block.duplicate()
+	var placed_block = chosen_floating_block_scene.instantiate()
 	placed_block.position = $TileMap.map_to_local(place_tile)
 	placed_block.z_index = -99
 	placed_scenes.append(placed_block)
@@ -72,11 +136,16 @@ func _on_game_place_block(place_tile: Vector2i):
 func _on_game_editing_started(chosen_blocks):
 	editing_started = true
 	floating_block_scenes = chosen_blocks
+	floating_block_pos = $TileMap.map_to_local(Vector2i(20, 5))
 	floating_block = floating_block_scenes[0].instantiate()
+	chosen_floating_block_scene = floating_block_scenes[0]
 	floating_block.visible = true
 	floating_block.z_index = -10
+	$CanvasLayer/RotateButtonControl.visible = true
+	$CanvasLayer/RotateButtonControl.set_process(true)
+	$CanvasLayer/PlaceButtonControl.visible = true
+	$CanvasLayer/PlaceButtonControl.set_process(true)
 	add_child(floating_block)
-	pass # Replace with function body.
 
 func emit_player_death():
 	player_death.emit()
@@ -86,30 +155,48 @@ func _on_game_editing_ended():
 	if floating_block != null:
 		floating_block.queue_free()
 	pattern_rotation = 0
+	$CanvasLayer/RotateButtonControl.visible = false
+	$CanvasLayer/RotateButtonControl.set_process(false)
+	$CanvasLayer/PlaceButtonControl.visible = false
+	$CanvasLayer/PlaceButtonControl.set_process(false)
 		
 func clear_blocks():
 	for scene in placed_scenes:
 		if scene != null:
 			scene.queue_free()
-	# Clear placed blocks, exclude internal onces
 	for node_coords in $TileMap.get_used_cells(BLOCK_LAYER):
 		var atlas_coords = $TileMap.get_cell_atlas_coords(BLOCK_LAYER, node_coords)
 		var alternative_tile = $TileMap.get_cell_alternative_tile(BLOCK_LAYER, node_coords)
 		if atlas_coords == Vector2i(15, 5) and alternative_tile == 5:
 			$TileMap.erase_cell(BLOCK_LAYER, node_coords)
-	# Clear intersections
 	for node_coords in $TileMap.get_used_cells(INTERSECTION_LAYER):
 		$TileMap.erase_cell(INTERSECTION_LAYER, node_coords)
-
-func _on_button_pressed():
-	pattern_rotation = (pattern_rotation+1)%4
-	floating_block.set_rotation_degrees(pattern_rotation*90)
 
 func get_floating_positions() -> Array[Vector2i]:
 	var positions: Array[Vector2i] = floating_block.get("positions")
 	for i in pattern_rotation:
 		positions = rotate_positions(positions)
 	return positions
+
+func min_floating_pos() -> Vector2i:
+	var float_poses = get_floating_positions()
+	var res = float_poses[0]
+	for pos in float_poses:
+		if res.x > pos.x:
+			res.x = pos.x
+		if res.y > pos.y:
+			res.y = pos.y
+	return res
+
+func max_floating_pos() -> Vector2i:
+	var float_poses = get_floating_positions()
+	var res = float_poses[0]
+	for pos in float_poses:
+		if res.x < pos.x:
+			res.x = pos.x
+		if res.y < pos.y:
+			res.y = pos.y
+	return res
 
 func rotate_positions(orig_cells: Array[Vector2i]) -> Array[Vector2i]:
 	
@@ -138,9 +225,22 @@ func _on_toolbox_select_block(block):
 	floating_block = block.instantiate()
 	floating_block.visible = true
 	floating_block.z_index = -10
+	pattern_rotation = 0
 	add_child(floating_block)
 
 
 
 func _on_game_clear_level():
 	clear_blocks()
+
+
+func _on_place_button_pressed():
+	var tile = $TileMap.local_to_map(floating_block_pos)
+	var inter_cells = intersecting_cells(tile)
+	if inter_cells.is_empty():
+		_on_game_place_block(tile)
+
+
+func _on_rotate_button_pressed():
+	pattern_rotation = (pattern_rotation+1)%4
+	floating_block.set_rotation_degrees(pattern_rotation*90)

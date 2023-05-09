@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cm32icboarbjk"]
+[gd_scene load_steps=13 format=3 uid="uid://cm32icboarbjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_6giik"]
 [ext_resource type="PackedScene" uid="uid://ngmi40wub50r" path="res://Level.tscn" id="1_7204i"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dj8j42j5i85m0" path="res://assets/kenney_pixel-platformer/Tiles/tile_0026.png" id="2_van8i"]
 [ext_resource type="PackedScene" uid="uid://cfbmmbiwodlx1" path="res://Toolbox.tscn" id="5_oyhps"]
 [ext_resource type="PackedScene" uid="uid://c08py8cloi81" path="res://Player.tscn" id="6_0x5li"]
+[ext_resource type="PackedScene" uid="uid://c7cko5inepxqb" path="res://MobileControls.tscn" id="7_nbj30"]
 
 [sub_resource type="GDScript" id="GDScript_vft3i"]
 script/source = "extends Node2D
@@ -40,7 +41,7 @@ _bundled = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eqqtt"]
-size = Vector2(1152, 18)
+size = Vector2(1816, 17)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k75vo"]
 size = Vector2(50, 18)
@@ -81,13 +82,6 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 30
 text = "EDIT LEVEL"
 
-[node name="RotateButton" type="Button" parent="zindenode/HUDLayer"]
-offset_left = 1008.0
-offset_top = 8.0
-offset_right = 1148.0
-offset_bottom = 39.0
-text = "Rotate 90 degree"
-
 [node name="Player" parent="." instance=ExtResource("6_0x5li")]
 position = Vector2(104, 520)
 
@@ -97,7 +91,7 @@ collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="deathPolygon"]
-position = Vector2(576, 0)
+position = Vector2(540, -0.5)
 shape = SubResource("RectangleShape2D_eqqtt")
 
 [node name="winPolygon" type="Area2D" parent="."]
@@ -107,6 +101,8 @@ collision_mask = 2
 position = Vector2(1039, 537)
 shape = SubResource("RectangleShape2D_k75vo")
 
+[node name="MobileControls" parent="." instance=ExtResource("7_nbj30")]
+
 [connection signal="clear_level" from="." to="Level" method="_on_game_clear_level"]
 [connection signal="editing_ended" from="." to="Level" method="_on_game_editing_ended"]
 [connection signal="editing_started" from="." to="Level" method="_on_game_editing_started"]
@@ -115,7 +111,8 @@ shape = SubResource("RectangleShape2D_k75vo")
 [connection signal="player_death" from="Level" to="." method="_on_level_player_death"]
 [connection signal="select_block" from="zindenode/HUDLayer/Toolbox" to="Level" method="_on_toolbox_select_block"]
 [connection signal="pressed" from="zindenode/HUDLayer/EditLevelButton" to="." method="_on_edit_button_pressed"]
-[connection signal="pressed" from="zindenode/HUDLayer/RotateButton" to="Level" method="_on_button_pressed"]
 [connection signal="death" from="Player" to="." method="_on_player_death"]
 [connection signal="body_entered" from="deathPolygon" to="Player" method="_on_death_polygon_body_entered"]
 [connection signal="body_entered" from="winPolygon" to="." method="_on_win_polygon_body_entered"]
+[connection signal="jump" from="MobileControls" to="Player" method="_on_mobile_controls_jump"]
+[connection signal="move" from="MobileControls" to="Player" method="_on_mobile_controls_move"]

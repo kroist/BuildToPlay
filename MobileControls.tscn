@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=3 uid="uid://c7cko5inepxqb"]
+
+[ext_resource type="Texture2D" uid="uid://dhf6yyaxlu7is" path="res://assets/gui/joystick.png" id="1_17u2j"]
+[ext_resource type="Texture2D" uid="uid://2bs3igix4kf8" path="res://assets/gui/controllerFrame.png" id="1_85gyb"]
+[ext_resource type="Script" path="res://MobileControls.gd" id="1_t1o4a"]
+[ext_resource type="Texture2D" uid="uid://cfrpm4mgk2pfl" path="res://assets/gui/controllerFrame2.png" id="2_ewuh0"]
+[ext_resource type="Texture2D" uid="uid://b5ek1qidryrrl" path="res://assets/gui/arrowLeft.png" id="2_qa5sh"]
+[ext_resource type="Script" path="res://JumpButton.gd" id="6_dgwiw"]
+[ext_resource type="Script" path="res://LeftRightButton.gd" id="6_oy820"]
+
+[node name="MobileControls" type="CanvasLayer"]
+script = ExtResource("1_t1o4a")
+
+[node name="LeftRightButton" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 72.0
+offset_top = 520.0
+offset_right = 400.0
+offset_bottom = 624.0
+script = ExtResource("6_oy820")
+
+[node name="LeftArrow" type="Sprite2D" parent="LeftRightButton"]
+position = Vector2(40, 56)
+scale = Vector2(1.825, 1.875)
+texture = ExtResource("2_qa5sh")
+
+[node name="LeftRightFrame" type="Sprite2D" parent="LeftRightButton"]
+position = Vector2(163.8, 54.625)
+scale = Vector2(1.426, 2)
+texture = ExtResource("1_85gyb")
+
+[node name="RightArrow" type="Sprite2D" parent="LeftRightButton/LeftRightFrame"]
+position = Vector2(87.0968, 0.6875)
+rotation = 3.14159
+scale = Vector2(1.2798, 0.9375)
+texture = ExtResource("2_qa5sh")
+
+[node name="Joystick" type="Sprite2D" parent="LeftRightButton"]
+position = Vector2(172, 54)
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("1_17u2j")
+
+[node name="JumpButton" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 936.0
+offset_top = 528.0
+offset_right = 1032.0
+offset_bottom = 624.0
+script = ExtResource("6_dgwiw")
+
+[node name="JumpFrame" type="Sprite2D" parent="JumpButton"]
+position = Vector2(48, 48)
+scale = Vector2(2, 2.008)
+texture = ExtResource("2_ewuh0")
+
+[node name="UpArrow" type="Sprite2D" parent="JumpButton"]
+position = Vector2(48, 48)
+rotation = 1.5708
+scale = Vector2(1.825, 1.875)
+texture = ExtResource("2_qa5sh")
+
+[connection signal="move" from="LeftRightButton" to="." method="_on_left_right_button_move"]
+[connection signal="jump" from="JumpButton" to="." method="_on_jump_button_jump"]
