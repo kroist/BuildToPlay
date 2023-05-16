@@ -41,7 +41,7 @@ _bundled = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eqqtt"]
-size = Vector2(1816, 17)
+size = Vector2(1864, 17)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k75vo"]
 size = Vector2(50, 18)
@@ -91,7 +91,7 @@ collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="deathPolygon"]
-position = Vector2(540, -0.5)
+position = Vector2(564, -0.5)
 shape = SubResource("RectangleShape2D_eqqtt")
 
 [node name="winPolygon" type="Area2D" parent="."]

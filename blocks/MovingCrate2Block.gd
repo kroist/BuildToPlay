@@ -18,10 +18,10 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	var delta_x = sin($Timer.time_left/4.0*2*PI)*slide_len/2.0
 	$Crate.position.x = delta_x
-	$CharacterBody2D/CollisionPolygon2D.position.x = delta_x
+	$CharacterBody2D.position.x = delta_x
 	pass
 
 

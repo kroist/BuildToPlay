@@ -128,6 +128,7 @@ func _on_game_place_block(place_tile: Vector2i):
 	placed_block.position = $TileMap.map_to_local(place_tile)
 	placed_block.z_index = -99
 	placed_scenes.append(placed_block)
+	placed_block.set_rotation_degrees(pattern_rotation*90)
 	add_child(placed_block)
 	if placed_block.has_signal("player_death"):
 		placed_block.player_death.connect(emit_player_death)
@@ -222,6 +223,7 @@ func rotate_positions(orig_cells: Array[Vector2i]) -> Array[Vector2i]:
 func _on_toolbox_select_block(block):
 	if floating_block != null:
 		floating_block.queue_free()
+	chosen_floating_block_scene = block
 	floating_block = block.instantiate()
 	floating_block.visible = true
 	floating_block.z_index = -10

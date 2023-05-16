@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends CharacterBody2D
 
 
 const SPEED = 300.0
@@ -14,6 +14,18 @@ var move_pressed = false
 var move_dir: float
 
 func _physics_process(delta):
+	if not is_multiplayer_authority():
+		proc_animations()
+		return
+	if Input.is_action_pressed("up"):
+		jump_pressed = true
+	if Input.is_action_pressed("left"):
+		move_pressed = true
+		move_dir = -1.0
+	if Input.is_action_pressed("right"):
+		move_pressed = true
+		move_dir = 1.0
+	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y += gravity * delta
@@ -29,8 +41,16 @@ func _physics_process(delta):
 		velocity.x = direction * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
-	velocity.x = velocity.x
 	
+	proc_animations()
+
+	move_and_slide()
+
+	jump_pressed = false
+	move_pressed = false
+	rpc("remote_set_pos", global_position, velocity)
+
+func proc_animations():
 	if velocity.y != 0:
 		$AnimatedSprite2D.animation = "jump"
 	elif velocity.x != 0:
@@ -49,11 +69,10 @@ func _physics_process(delta):
 	else:
 		$AnimatedSprite2D.stop()
 
-	move_and_slide()
-
-	jump_pressed = false
-	move_pressed = false
-
+@rpc("unreliable")
+func remote_set_pos(_global_pos, _velocity):
+	global_position = _global_pos
+	velocity = _velocity
 
 func _on_death_polygon_body_entered(body):
 	death.emit()
