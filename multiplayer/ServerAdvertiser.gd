@@ -11,7 +11,7 @@ var socketUDP: PacketPeerUDP
 var broadcastTimer := Timer.new()
 var broadcastPort := DEFAULT_PORT
 
-func _enter_tree():
+func start():
 	broadcastTimer.wait_time = broadcast_interval
 	broadcastTimer.one_shot = false
 	broadcastTimer.autostart = true
@@ -31,9 +31,15 @@ func broadcast():
 	#print('Broadcasting game...')
 	var packetMessage: String = JSON.stringify(serverInfo)
 	var packet := packetMessage.to_ascii_buffer()
-	socketUDP.put_packet(packet)
+	for address in IP.get_local_addresses():
+		var parts = address.split('.')
+		if (parts.size() == 4):
+			parts[3] = '255'
+			socketUDP.set_dest_address(parts[0]+'.'+parts[1]+'.'+parts[2]+'.'+parts[3], broadcastPort)
+			socketUDP.put_packet(packet)
 
-func _exit_tree():
+
+func stop():
 	broadcastTimer.stop()
-	if socketUDP != null:
-		socketUDP.close()
+	#if socketUDP != null:
+	#	socketUDP.close()

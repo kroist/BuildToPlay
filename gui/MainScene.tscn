@@ -1,0 +1,83 @@
+[gd_scene load_steps=4 format=3 uid="uid://chp4vmws1cwof"]
+
+[ext_resource type="Script" path="res://gui/MainScene.gd" id="1_jidgj"]
+[ext_resource type="Texture2D" uid="uid://rkf5yphhfu3d" path="res://assets/kenney_pixel-ui-pack/9-Slice/Colored/blue.png" id="2_4u6h5"]
+[ext_resource type="PackedScene" uid="uid://bfcks752mkhnl" path="res://gui/Lobby.tscn" id="3_s0ug8"]
+
+[node name="MainScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jidgj")
+
+[node name="MainMenu" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="MainMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -96.0
+offset_top = -72.0
+offset_right = 96.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_4u6h5")
+metadata/_edit_lock_ = true
+
+[node name="HostButton" type="Button" parent="MainMenu"]
+layout_mode = 2
+offset_left = 416.0
+offset_top = 152.0
+offset_right = 736.0
+offset_bottom = 215.0
+theme_override_font_sizes/font_size = 40
+text = "Host"
+
+[node name="Panel" type="Panel" parent="MainMenu"]
+layout_mode = 0
+offset_left = 464.0
+offset_top = 232.0
+offset_right = 680.0
+offset_bottom = 296.0
+
+[node name="Label" type="Label" parent="MainMenu/Panel"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 77.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 30
+text = "Local games:"
+metadata/_edit_lock_ = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainMenu"]
+layout_mode = 2
+offset_left = 400.0
+offset_top = 328.0
+offset_right = 760.0
+offset_bottom = 540.0
+grow_horizontal = 2
+horizontal_scroll_mode = 0
+
+[node name="ServerList" type="VBoxContainer" parent="MainMenu/ScrollContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Lobby" parent="." instance=ExtResource("3_s0ug8")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="MainMenu/HostButton" to="." method="_on_host_button_pressed"]
+[connection signal="back_to_menu" from="Lobby" to="." method="_on_lobby_back_to_menu"]
+[connection signal="start_game_sig" from="Lobby" to="." method="_on_lobby_start_game_sig"]

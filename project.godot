@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="BuildToPlay"
-run/main_scene="res://gui/MainMenu.tscn"
+run/main_scene="res://gui/MainScene.tscn"
 config/features=PackedStringArray("4.0", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+server_advertiser="*res://multiplayer/ServerAdvertiser.gd"
+server_listener="*res://multiplayer/ServerListener.gd"
 
 [display]
 

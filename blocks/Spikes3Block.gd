@@ -19,5 +19,5 @@ func _process(delta):
 
 
 func _on_area_2d_body_entered(body):
-	player_death.emit()
+	player_death.emit(body.name)
 	pass # Replace with function body.

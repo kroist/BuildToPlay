@@ -75,7 +75,7 @@ func remote_set_pos(_global_pos, _velocity):
 	velocity = _velocity
 
 func _on_death_polygon_body_entered(body):
-	death.emit()
+	death.emit(body.name)
 	pass # Replace with function body.
 
 

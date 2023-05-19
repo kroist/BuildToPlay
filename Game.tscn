@@ -67,20 +67,17 @@ transform = Transform2D(1, 0, 0, 1, 2.08165e-12, 2.08165e-12)
 z_as_relative = false
 offset_top = 1.38283e-05
 
-[node name="EditLevelButton" type="Button" parent="zindenode/HUDLayer"]
-anchors_preset = 8
+[node name="EditCountdown" type="Label" parent="zindenode/HUDLayer"]
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -83.0
-offset_top = -25.0
-offset_right = 83.0
-offset_bottom = 25.0
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 26.0
 grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 30
-text = "EDIT LEVEL"
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 35
+text = "15"
 
 [node name="Player" parent="." instance=ExtResource("6_0x5li")]
 position = Vector2(104, 520)
@@ -103,6 +100,9 @@ shape = SubResource("RectangleShape2D_k75vo")
 
 [node name="MobileControls" parent="." instance=ExtResource("7_nbj30")]
 
+[node name="EditTimer" type="Timer" parent="."]
+wait_time = 15.0
+
 [connection signal="clear_level" from="." to="Level" method="_on_game_clear_level"]
 [connection signal="editing_ended" from="." to="Level" method="_on_game_editing_ended"]
 [connection signal="editing_started" from="." to="Level" method="_on_game_editing_started"]
@@ -110,9 +110,9 @@ shape = SubResource("RectangleShape2D_k75vo")
 [connection signal="block_placed" from="Level" to="." method="_on_level_block_placed"]
 [connection signal="player_death" from="Level" to="." method="_on_level_player_death"]
 [connection signal="select_block" from="zindenode/HUDLayer/Toolbox" to="Level" method="_on_toolbox_select_block"]
-[connection signal="pressed" from="zindenode/HUDLayer/EditLevelButton" to="." method="_on_edit_button_pressed"]
 [connection signal="death" from="Player" to="." method="_on_player_death"]
 [connection signal="body_entered" from="deathPolygon" to="Player" method="_on_death_polygon_body_entered"]
 [connection signal="body_entered" from="winPolygon" to="." method="_on_win_polygon_body_entered"]
 [connection signal="jump" from="MobileControls" to="Player" method="_on_mobile_controls_jump"]
 [connection signal="move" from="MobileControls" to="Player" method="_on_mobile_controls_move"]
+[connection signal="timeout" from="EditTimer" to="." method="_on_edit_timer_timeout"]

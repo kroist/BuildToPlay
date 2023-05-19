@@ -121,7 +121,8 @@ func draw_intersection(tiles: Array[Vector2i]):
 		$TileMap.set_cell(INTERSECTION_LAYER, tile, 2, Vector2i(5, 1), 1)
 
 func _on_game_place_block(place_tile: Vector2i):
-	for tile in get_floating_positions():
+	var floating_positions = get_floating_positions()
+	for tile in floating_positions:
 		var tile_pos = place_tile + tile
 		$TileMap.set_cell(BLOCK_LAYER, tile_pos, 1, Vector2i(15, 5), 5)
 	var placed_block = chosen_floating_block_scene.instantiate()
@@ -132,7 +133,29 @@ func _on_game_place_block(place_tile: Vector2i):
 	add_child(placed_block)
 	if placed_block.has_signal("player_death"):
 		placed_block.player_death.connect(emit_player_death)
+	rpc("place_block", place_tile, floating_positions, pattern_rotation, chosen_floating_block_scene.resource_path)
 	block_placed.emit()
+	
+@rpc("any_peer", "reliable")
+func place_block(
+	place_tile: Vector2i,
+	floating_block_positions: Array,
+	pattern_rotation: int,
+	floating_block_scene_path: String
+):
+	var floating_block_scene = load(floating_block_scene_path)
+	for tile in floating_block_positions:
+		var tile_pos = place_tile + tile
+		$TileMap.set_cell(BLOCK_LAYER, tile_pos, 1, Vector2i(15, 5), 5)
+	var placed_block = floating_block_scene.instantiate()
+	placed_block.position = $TileMap.map_to_local(place_tile)
+	placed_block.z_index = -99
+	placed_scenes.append(placed_block)
+	placed_block.set_rotation_degrees(pattern_rotation*90)
+	add_child(placed_block)
+	if placed_block.has_signal("player_death"):
+		print('kek')
+		placed_block.player_death.connect(emit_player_death)
 
 func _on_game_editing_started(chosen_blocks):
 	editing_started = true
@@ -148,8 +171,8 @@ func _on_game_editing_started(chosen_blocks):
 	$CanvasLayer/PlaceButtonControl.set_process(true)
 	add_child(floating_block)
 
-func emit_player_death():
-	player_death.emit()
+func emit_player_death(name):
+	player_death.emit(name)
 
 func _on_game_editing_ended():
 	editing_started = false

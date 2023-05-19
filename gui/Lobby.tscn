@@ -1,10 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://bfcks752mkhnl"]
+[gd_scene load_steps=3 format=3 uid="uid://bfcks752mkhnl"]
 
 [ext_resource type="Texture2D" uid="uid://rkf5yphhfu3d" path="res://assets/kenney_pixel-ui-pack/9-Slice/Colored/blue.png" id="1_mxawc"]
 [ext_resource type="Script" path="res://gui/Lobby.gd" id="1_smqk5"]
-[ext_resource type="Script" path="res://multiplayer/ServerAdvertiser.gd" id="3_o4chi"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_kutl4"]
 
 [node name="Lobby" type="Control"]
 layout_mode = 3
@@ -32,17 +29,17 @@ metadata/_edit_lock_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TextureRect"]
 layout_mode = 0
-offset_left = 328.0
-offset_top = 224.0
-offset_right = 544.0
-offset_bottom = 256.0
+offset_left = 352.0
+offset_top = 240.0
+offset_right = 568.0
+offset_bottom = 272.0
 
 [node name="Panel" type="Panel" parent="TextureRect"]
 layout_mode = 0
 offset_left = 384.0
 offset_top = 168.0
-offset_right = 472.0
-offset_bottom = 208.0
+offset_right = 528.0
+offset_bottom = 232.0
 
 [node name="Label" type="Label" parent="TextureRect/Panel"]
 layout_mode = 0
@@ -50,19 +47,26 @@ offset_left = 16.0
 offset_top = 8.0
 offset_right = 77.0
 offset_bottom = 34.0
+theme_override_font_sizes/font_size = 30
 text = "Players:"
-label_settings = SubResource("LabelSettings_kutl4")
 
 [node name="StartButton" type="Button" parent="TextureRect"]
-visible = false
 layout_mode = 0
 offset_left = 864.0
 offset_top = 272.0
 offset_right = 960.0
 offset_bottom = 303.0
+theme_override_font_sizes/font_size = 30
 text = "Start Game"
 
-[node name="ServerAdvertiser" type="Node" parent="."]
-script = ExtResource("3_o4chi")
+[node name="CloseButton" type="Button" parent="TextureRect"]
+layout_mode = 0
+offset_left = 864.0
+offset_top = 176.0
+offset_right = 1036.0
+offset_bottom = 226.0
+theme_override_font_sizes/font_size = 30
+text = "Close lobby"
 
 [connection signal="pressed" from="TextureRect/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="TextureRect/CloseButton" to="." method="_on_close_button_pressed"]
