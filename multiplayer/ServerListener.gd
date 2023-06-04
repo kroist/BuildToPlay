@@ -8,7 +8,7 @@ var cleanUpTimer := Timer.new()
 var socketUDP := PacketPeerUDP.new()
 var listenPort := 9967
 var knownServers = {}
-@export var server_cleanup_threshold: int = 15
+@export var server_cleanup_threshold: int = 1
 
 func _init():
 	cleanUpTimer.wait_time = server_cleanup_threshold

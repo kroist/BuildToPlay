@@ -50,6 +50,12 @@ func _physics_process(delta):
 	move_pressed = false
 	rpc("remote_set_pos", global_position, velocity)
 
+func recolor():
+	var h = (randi_range(0, 360)+0.0)/360.0
+	var s = (randi_range(42, 98)+0.0)/100.0
+	var l = (randi_range(40, 90)+0.0)/100.0
+	$Polygon2D.color = Color.from_ok_hsl(h, s, l)
+
 func proc_animations():
 	if velocity.y != 0:
 		$AnimatedSprite2D.animation = "jump"
@@ -60,8 +66,12 @@ func proc_animations():
 	
 	if velocity.x > 0:
 		$AnimatedSprite2D.flip_h = false
+		$Polygon2D.scale.x = 1
+		$CollisionPolygon2D.scale.x = 0.45
 	elif velocity.x < 0:
 		$AnimatedSprite2D.flip_h = true
+		$Polygon2D.scale.x = -1
+		$CollisionPolygon2D.scale.x = -0.45
 
 	
 	if velocity.length() > 0:

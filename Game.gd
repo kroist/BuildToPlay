@@ -63,6 +63,8 @@ func unpause_game():
 var players_finished = []
 
 func _process(delta):
+	if Input.is_action_pressed("end_game"):
+		rpc("finish_level")
 	$zindenode/HUDLayer/EditCountdown.text = str("%.2f" % $EditTimer.time_left)
 	pass
 	
@@ -192,11 +194,13 @@ var player_characters = []
 func add_player_character(peer_id):
 	if peer_id == multiplayer.get_unique_id():
 		$Player.set_multiplayer_authority(peer_id)
+		$Player.recolor()
 		$Player.name = "player_" + str(peer_id)
 		return
 	var player = preload("res://Player.tscn").instantiate()
 	player.name = "player_" + str(peer_id)
 	player.position = player_spawn_pos
+	player.recolor()
 	player.set_multiplayer_authority(peer_id)
 	#player.collision_layer = (1<<2) #3d bit
 	add_child(player)

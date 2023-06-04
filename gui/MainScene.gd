@@ -8,11 +8,12 @@ func _ready():
 	
 	multiplayer.connection_failed.connect(
 		func():
-			print('kek')
+			print('connection failed')
 			internet_problems()
 	)
 	multiplayer.server_disconnected.connect(
 		func():
+			print('server disconnected')
 			internet_problems()
 	)
 	disable_lobby()
@@ -29,8 +30,8 @@ func _process(delta):
 func _on_host_button_pressed():
 	server_advertiser.start()
 	disable_menu()
-	enable_lobby()
 	$Lobby.call("create_lobby")
+	enable_lobby()
 
 
 func _on_server_listener_new_server(serverInfo):
@@ -49,8 +50,8 @@ func _on_server_listener_remove_server(serverIp):
 
 func _connect_to_lobby(lobbyIp):	
 	disable_menu()
-	enable_lobby()
 	$Lobby.call("connect_to_lobby", lobbyIp)
+	enable_lobby()
 
 
 func _on_lobby_back_to_menu():
@@ -61,6 +62,7 @@ func enable_lobby():
 	$Lobby.visible = true
 
 func disable_lobby():
+	print('here')
 	server_advertiser.stop()
 	$Lobby.visible = false
 	
@@ -79,6 +81,7 @@ func disable_game():
 	if game:
 		remove_child(game)
 		game.queue_free()
+		game = null
 	pass
 
 
@@ -90,6 +93,7 @@ func internet_problems():
 	disable_game()
 	disable_lobby()
 	enable_menu()
+	multiplayer.multiplayer_peer.close()
 	
 func end_level():
 	internet_problems()
