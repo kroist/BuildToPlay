@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cm32icboarbjk"]
+[gd_scene load_steps=14 format=3 uid="uid://cm32icboarbjk"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_6giik"]
 [ext_resource type="PackedScene" uid="uid://ngmi40wub50r" path="res://Level.tscn" id="1_7204i"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cfbmmbiwodlx1" path="res://Toolbox.tscn" id="5_oyhps"]
 [ext_resource type="PackedScene" uid="uid://c08py8cloi81" path="res://Player.tscn" id="6_0x5li"]
 [ext_resource type="PackedScene" uid="uid://c7cko5inepxqb" path="res://MobileControls.tscn" id="7_nbj30"]
+[ext_resource type="Texture2D" uid="uid://rkf5yphhfu3d" path="res://assets/kenney_pixel-ui-pack/9-Slice/Colored/blue.png" id="8_rpv1p"]
 
 [sub_resource type="GDScript" id="GDScript_vft3i"]
 script/source = "extends Node2D
@@ -44,7 +45,7 @@ _bundled = {
 size = Vector2(1864, 17)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k75vo"]
-size = Vector2(50, 18)
+size = Vector2(50, 17)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_6giik")
@@ -60,6 +61,7 @@ modulate = Color(0.627451, 0.627451, 0.627451, 1)
 [node name="zindenode" type="Node2D" parent="."]
 
 [node name="HUDLayer" type="CanvasLayer" parent="zindenode"]
+visible = false
 offset = Vector2(2.08165e-12, 2.08165e-12)
 transform = Transform2D(1, 0, 0, 1, 2.08165e-12, 2.08165e-12)
 
@@ -95,13 +97,55 @@ shape = SubResource("RectangleShape2D_eqqtt")
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="winPolygon"]
-position = Vector2(1039, 537)
+position = Vector2(1032, 536)
 shape = SubResource("RectangleShape2D_k75vo")
 
 [node name="MobileControls" parent="." instance=ExtResource("7_nbj30")]
 
 [node name="EditTimer" type="Timer" parent="."]
 wait_time = 15.0
+
+[node name="ScoreScreen" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="ScoreScreen"]
+visible = false
+
+[node name="TextureRect" type="TextureRect" parent="ScoreScreen/CanvasLayer"]
+offset_left = 240.0
+offset_top = 136.0
+offset_right = 920.0
+offset_bottom = 472.0
+texture = ExtResource("8_rpv1p")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScoreScreen/CanvasLayer/TextureRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -20.0
+offset_right = 92.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="ScoreScreen/CanvasLayer/TextureRect"]
+layout_mode = 0
+offset_left = 224.0
+offset_top = 16.0
+offset_right = 448.0
+offset_bottom = 80.0
+
+[node name="Label" type="Label" parent="ScoreScreen/CanvasLayer/TextureRect/Panel"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 216.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 30
+text = "Player Scores:"
 
 [connection signal="clear_level" from="." to="Level" method="_on_game_clear_level"]
 [connection signal="editing_ended" from="." to="Level" method="_on_game_editing_ended"]

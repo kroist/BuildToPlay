@@ -21,7 +21,23 @@ var PLAY_PHASE = 2
 
 var current_phase = 0 
 
+var scr_show_time = 5
+var win_scr_show_time = 5
+var win_scr_timer := Timer.new()
+var scr_timer := Timer.new()
+
 func _ready():
+	
+	scr_timer.wait_time = scr_show_time
+	scr_timer.one_shot = false
+	scr_timer.autostart = false
+	scr_timer.timeout.connect(hide_score_screen)
+	win_scr_timer.wait_time = win_scr_show_time
+	win_scr_timer.one_shot = false
+	win_scr_timer.autostart = false
+	win_scr_timer.timeout.connect(hide_win_screen)
+	add_child(scr_timer)
+	add_child(win_scr_timer)
 	
 	players_ids = multiplayer.get_peers()
 	players_ids.append(multiplayer.get_unique_id())
@@ -70,7 +86,7 @@ func _process(delta):
 	
 func _restart():
 	play_phase_finish()
-	#clear_level.emit()
+	clear_level.emit()
 
 
 func editing_phase_finish():
@@ -98,6 +114,7 @@ func editing_phase_finish_confirm():
 	start_play_phase()
 
 func start_editing_phase():
+	print('uraa')
 	$EditTimer.start()
 	$zindenode/HUDLayer/EditCountdown.visible = true
 	players_finished = []
@@ -177,11 +194,68 @@ func _on_level_block_placed():
 
 
 func _on_win_polygon_body_entered(body):
-	rpc("finish_level")
+	if body.name == "player_" + str(multiplayer.get_unique_id()):
+		rpc("finish_level", body.name)
 	
+var player_score_dict = {}
+
+
 @rpc("any_peer", "call_local", "reliable")
-func finish_level():
+func finish_level(player_name):
+	var player_id = player_name.substr(7)
+	var score = player_score_dict.get(player_id, 0)+1
+	player_score_dict[player_id] = score
+	if score == 5:
+		show_win_screen(player_id)
+		win_scr_timer.start()
+		return
+	
+	show_score_screen()
+	scr_timer.start()
+	
+	
+func show_score_screen():
+	$ScoreScreen/CanvasLayer/TextureRect/Panel/Label.text = "Player Scores:"
+	$ScoreScreen/CanvasLayer.visible = true
+	var children = $ScoreScreen/CanvasLayer/TextureRect/VBoxContainer.get_children()
+	for node in children:
+		$ScoreScreen/CanvasLayer/TextureRect/VBoxContainer.remove_child(node)
+		node.queue_free()
+	for player_id in player_score_dict.keys():
+		var score = player_score_dict.get(player_id, 0)
+		var label = Label.new()
+		label.name = str(player_id)
+		label.text = "Player " + player_id + " : " + str(score)
+		label.add_theme_font_size_override("font_size", 25)
+		if player_id == str(multiplayer.get_unique_id()):
+			label.text += " (You)"
+		$ScoreScreen/CanvasLayer/TextureRect/VBoxContainer.add_child(label)
+	pass
+func hide_score_screen():
+	scr_timer.stop()
+	$ScoreScreen/CanvasLayer.visible = false
+	_restart()
+	pass
+
+func show_win_screen(player_id):
+	$ScoreScreen/CanvasLayer/TextureRect/Panel/Label.text = "Player won!"
+	$ScoreScreen/CanvasLayer.visible = true
+	var children = $ScoreScreen/CanvasLayer/TextureRect/VBoxContainer.get_children()
+	for node in children:
+		$ScoreScreen/CanvasLayer/TextureRect/VBoxContainer.remove_child(node)
+		node.queue_free()
+	var label = Label.new()
+	label.name = str(player_id)
+	label.text = "Player " + player_id
+	label.add_theme_font_size_override("font_size", 25)
+	if player_id == str(multiplayer.get_unique_id()):
+		label.text += " (You)"
+	$ScoreScreen/CanvasLayer/TextureRect/VBoxContainer.add_child(label)
+	pass
+func hide_win_screen():
+	$ScoreScreen/CanvasLayer.visible = false
 	end_level.emit()
+	pass
 
 func init_characters():
 	for id in players_ids:
@@ -194,13 +268,13 @@ var player_characters = []
 func add_player_character(peer_id):
 	if peer_id == multiplayer.get_unique_id():
 		$Player.set_multiplayer_authority(peer_id)
-		$Player.recolor()
+		$Player.recolor(peer_id)
 		$Player.name = "player_" + str(peer_id)
 		return
 	var player = preload("res://Player.tscn").instantiate()
 	player.name = "player_" + str(peer_id)
 	player.position = player_spawn_pos
-	player.recolor()
+	player.recolor(peer_id)
 	player.set_multiplayer_authority(peer_id)
 	#player.collision_layer = (1<<2) #3d bit
 	add_child(player)

@@ -62,7 +62,6 @@ func enable_lobby():
 	$Lobby.visible = true
 
 func disable_lobby():
-	print('here')
 	server_advertiser.stop()
 	$Lobby.visible = false
 	
@@ -86,6 +85,7 @@ func disable_game():
 
 
 func _on_lobby_start_game_sig():
+	disable_menu()
 	disable_lobby()
 	enable_game()
 
@@ -96,4 +96,8 @@ func internet_problems():
 	multiplayer.multiplayer_peer.close()
 	
 func end_level():
+	internet_problems()
+
+
+func _on_lobby_internet_problems_sig():
 	internet_problems()

@@ -2,6 +2,8 @@ extends Control
 
 signal back_to_menu
 signal start_game_sig
+signal internet_problems_sig
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -41,11 +43,15 @@ func start_server():
 			await get_tree().create_timer(1).timeout
 			if game_started:
 				multiplayer_peer.disconnect_peer(new_peer_id, true)
+				return
 			add_player(new_peer_id)
 	)
 	multiplayer_peer.peer_disconnected.connect(
 		func (rem_peer_id):
 			await get_tree().create_timer(1).timeout
+			if game_started:
+				internet_problems_sig.emit()
+				return
 			rpc("remove_player", rem_peer_id)
 	)
 	

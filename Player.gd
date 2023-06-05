@@ -50,10 +50,15 @@ func _physics_process(delta):
 	move_pressed = false
 	rpc("remote_set_pos", global_position, velocity)
 
-func recolor():
-	var h = (randi_range(0, 360)+0.0)/360.0
-	var s = (randi_range(42, 98)+0.0)/100.0
-	var l = (randi_range(40, 90)+0.0)/100.0
+var to_add = 123456789
+
+func recolor(peer_id):
+	var rh = (peer_id+to_add)%360
+	var rs = (peer_id+to_add)%(98-42)+42
+	var rl = (peer_id+to_add)%(90-40)+40
+	var h = (rh+0.0)/360.0
+	var s = (rs+0.0)/100.0
+	var l = (rl+0.0)/100.0
 	$Polygon2D.color = Color.from_ok_hsl(h, s, l)
 
 func proc_animations():

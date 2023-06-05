@@ -179,6 +179,8 @@ func _on_game_editing_ended():
 	if floating_block != null:
 		floating_block.queue_free()
 	pattern_rotation = 0
+	for node_coords in $TileMap.get_used_cells(INTERSECTION_LAYER):
+		$TileMap.erase_cell(INTERSECTION_LAYER, node_coords)
 	$CanvasLayer/RotateButtonControl.visible = false
 	$CanvasLayer/RotateButtonControl.set_process(false)
 	$CanvasLayer/PlaceButtonControl.visible = false
