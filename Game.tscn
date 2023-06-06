@@ -61,7 +61,6 @@ modulate = Color(0.627451, 0.627451, 0.627451, 1)
 [node name="zindenode" type="Node2D" parent="."]
 
 [node name="HUDLayer" type="CanvasLayer" parent="zindenode"]
-visible = false
 offset = Vector2(2.08165e-12, 2.08165e-12)
 transform = Transform2D(1, 0, 0, 1, 2.08165e-12, 2.08165e-12)
 

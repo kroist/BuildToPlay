@@ -77,7 +77,21 @@ func _end_drag(event):
 func _process_drag(event):
 	if event.index != drag_index or !is_dragging or not editing_started:
 		return
+	var draw_pos1 = (drag_cur_pos-drag_start_pos)+floating_block_pos
+	draw_pos1 = draw_pos1.clamp(
+		$TileMap.map_to_local(min_bound-min_floating_pos()), 
+		$TileMap.map_to_local(max_bound-max_floating_pos())
+	)
 	drag_cur_pos = event.position
+	var draw_pos2 = (drag_cur_pos-drag_start_pos)+floating_block_pos
+	draw_pos2 = draw_pos2.clamp(
+		$TileMap.map_to_local(min_bound-min_floating_pos()), 
+		$TileMap.map_to_local(max_bound-max_floating_pos())
+	)
+	var tile1 = $TileMap.local_to_map(draw_pos1)
+	var tile2= $TileMap.local_to_map(draw_pos2)
+	if tile1 != tile2:
+		Input.vibrate_handheld(20)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
